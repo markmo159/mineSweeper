@@ -1,0 +1,80 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  height: 100vh;
+  background: radial-gradient(rgb(92, 189, 192),rgb(230, 221, 221))
+}
+
+.container {
+  width: 90%;
+  margin: auto;
+}
+
+.header {
+  text-align: center;
+}
+
+.buttons {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 20px;
+}
+
+.levelButton {
+  margin-right: 10px;
+  padding: 0 2px;
+  cursor: pointer;
+}
+#hard {
+  margin-right: 0;
+}
+
+
+#timer {
+  text-align: center;
+  margin-top: 40px;
+}
+
+
+#board {
+  margin-top: 40px;
+  display: grid;
+  justify-content: center;
+  align-content: center;
+  grid-template-columns: repeat(9, 40px);
+  grid-template-rows: repeat(9, 40px);
+}
+
+.brick {
+  background: rgb(204, 203, 203);
+  border: 1px solid black;
+  position: relative;
+  text-align: center;
+}
+
+.covered::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  bottom: 0;
+  z-index: 100;
+  background: rgb(114, 110, 110);
+}
+
+.flag::after {
+  content: 'F';
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  bottom: 0;
+  z-index: 100;
+  background: rgb(182, 22, 22);
+}
