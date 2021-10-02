@@ -316,7 +316,7 @@ function gameOver () {
   // startClicking(runnigTime,bombLoction,collons,rows,howManyBombs)
 }
 
-
+//sahar
 function winner (score,gameLevel) {
   if (!localStorage.getItem(gameLevel) || localStorage.getItem(gameLevel) > score) {
     console.log('jkhkn')
