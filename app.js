@@ -315,6 +315,7 @@ function gameOver () {
   // numbersAroundBomb(bombLoction,collons,rows);
   // startClicking(runnigTime,bombLoction,collons,rows,howManyBombs)
 }
+//yalla barca
 
 function winner (score,gameLevel) {
   if (!localStorage.getItem(gameLevel) || localStorage.getItem(gameLevel) > score) {
