@@ -5,16 +5,20 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="style.css" >
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css" integrity="sha384-DyZ88mC6Up2uqS4h/KRgHuoeGwBcD4Ng9SiP4dIRy0EXTlnuz47vAwmeGwVChigm" crossorigin="anonymous">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Dosis:wght@600;800&family=Orbitron:wght@500&display=swap" rel="stylesheet">
   <title>MineSweeper</title>
 </head>
 <body>
   <div class="container">
     <header class="header">
-      <h1>MineSweeper</h1>
+      <h1>MineSweeper <i class="fas fa-bomb"></i></h1>
       <h3 id="playername">Welcome</h3>
-      <h4 id="easyscore"></h4>
-      <h4 id="mediumscore"></h4>
-      <h4 id="hardscore"></h4>
+      <h4 >Your easy level high score : <span id="easyscore"></span></h4>
+      <h4 >Your medium level high score : <span id="mediumscore"></span></h4>
+      <h4 >Your hard level high score : <span id="hardscore"></span></h4>
     </header>
     <div class="buttons">
       <button id="easy" class="levelButton">Easy</button>
@@ -22,17 +26,13 @@
       <button id="hard" class="levelButton">Hard</button>
     </div>
 
-    <div id="timer">0</div>
+    <div class="timer">
+      Time : <span id="timer">0</span> Flags : <span id="flagCount"></span>
+    </div>
 
     <div class="board" id="board"></div>
 
-    <div class="control">
-
-    </div>
   </div>
-
-
-
 
 
   <script src="app.js"></script>

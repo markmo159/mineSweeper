@@ -12,15 +12,16 @@ if (!localStorage.getItem('playerName')) {
 const player = document.getElementById('playername');
 const board = document.getElementById('board');
 const timer = document.getElementById('timer');
+const flagCount = document.getElementById('flagCount');
 const easyBetter = document.getElementById('easyscore');
 const mediumBetter = document.getElementById('mediumscore');
 const hardBetter = document.getElementById('hardscore');
 
 player.innerText = `Welcome ${localStorage.getItem('playerName')}`;
 
-localStorage.getItem('easyscore') ? easyBetter.innerText = `Your easy level high score : ${localStorage.getItem('easyscore')}` : easyBetter.innerText = 'Your easy level high score : none';
-localStorage.getItem('mediumscore') ? mediumBetter.innerText = `Your medium level high score : ${localStorage.getItem('mediumscore')}` : mediumBetter.innerText = 'Your medium level high score : none';
-localStorage.getItem('hardscore') ? hardBetter.innerText = `Your hard level high score : ${localStorage.getItem('hardscore')}` : hardBetter.innerText = 'Your hard level high score : none';
+localStorage.getItem('easyscore') ? easyBetter.innerText = ` ${localStorage.getItem('easyscore')}` : easyBetter.innerText = ' none';
+localStorage.getItem('mediumscore') ? mediumBetter.innerText = ` ${localStorage.getItem('mediumscore')}` : mediumBetter.innerText = ' none';
+localStorage.getItem('hardscore') ? hardBetter.innerText = ` ${localStorage.getItem('hardscore')}` : hardBetter.innerText = ' none';
 
 
 // buttons
@@ -28,47 +29,61 @@ const easyButton = document.getElementById('easy');
 const mediumButton = document.getElementById('medium');
 const hardButton = document.getElementById('hard');
 
+let runnigTime;
+
 easyButton.addEventListener('click', function () {
   if(board.firstChild) {
     while (board.firstChild) {
       board.removeChild(board.firstChild)
     }
+    pause();
+    timer.innerText = '0';
+    runnigTime = null;
   }
+  flagCount.innerText = 10
   board.style.gridTemplateColumns = 'repeat(9, 40px)';
-    board.style.gridTemplateRows = 'repeat(9, 40px)';
-    let rows = 9;
-    let collons = 9;
-    let howManyBombs = 10;
-    let gameLevel = 'easyscore';
-    start (rows,collons,howManyBombs,gameLevel);
+  board.style.gridTemplateRows = 'repeat(9, 40px)';
+  let rows = 9;
+  let collons = 9;
+  let howManyBombs = 10;
+  let gameLevel = 'easyscore';
+  start (rows,collons,howManyBombs,gameLevel);
 });
 mediumButton.addEventListener('click', function () {
   if(board.firstChild) {
     while (board.firstChild) {
       board.removeChild(board.firstChild)
     }
+    pause();
+    timer.innerText = '0';
+    runnigTime = null;
   }
-    board.style.gridTemplateColumns = 'repeat(16, 40px)';
-    board.style.gridTemplateRows = 'repeat(16, 40px)';
-    let rows = 16;
-    let collons = 16;
-    let howManyBombs = 40;
-    let gameLevel = 'mediumscore';
-    start (rows,collons,howManyBombs);
+  flagCount.innerText = 40
+  board.style.gridTemplateColumns = 'repeat(16, 40px)';
+  board.style.gridTemplateRows = 'repeat(16, 40px)';
+  let rows = 16;
+  let collons = 16;
+  let howManyBombs = 40;
+  let gameLevel = 'mediumscore';
+  start (rows,collons,howManyBombs,gameLevel);
 });
 hardButton.addEventListener('click', function () {
   if(board.firstChild) {
     while (board.firstChild) {
       board.removeChild(board.firstChild)
     }
+    pause();
+    timer.innerText = '0';
+    runnigTime = null;
   }
-    board.style.gridTemplateColumns = 'repeat(30, 40px)';
-    board.style.gridTemplateRows = 'repeat(16, 40px)';
-    let rows = 16;
-    let collons = 30;
-    let howManyBombs = 99;
-    let gameLevel = 'hardscore';
-    start (rows,collons,howManyBombs);
+  flagCount.innerText = 99
+  board.style.gridTemplateColumns = 'repeat(30, 40px)';
+  board.style.gridTemplateRows = 'repeat(16, 40px)';
+  let rows = 16;
+  let collons = 30;
+  let howManyBombs = 99;
+  let gameLevel = 'hardscore';
+  start (rows,collons,howManyBombs,gameLevel);
 });
 
 
@@ -95,12 +110,15 @@ function boardBuild (num) {
 function bomb (howManyBombs,rows,collons) {
   let bombLocation = [];
   for (let bombNumber = 0; bombNumber < howManyBombs; bombNumber++) {
+    const icon = document.createElement('i');
+    icon.setAttribute('class', 'fas fa-bomb')
     let blockNum = bombGenerator(rows*collons);
     while (bombLocation.includes(blockNum)) {
       blockNum = bombGenerator(rows*collons);
     };
     bombLocation.push(blockNum);
-    document.getElementById(`brick${blockNum}`).innerText = 'B';
+    document.getElementById(`brick${blockNum}`).classList.add('bomb');
+    document.getElementById(`brick${blockNum}`).append (icon);
   }
   return bombLocation.sort();
 }
@@ -152,12 +170,13 @@ function numbersAroundBomb(bombLocation,collons,rows) {
 // 3.1. numbers around bomb
 function implementingNumbers (location, movement ) {
   const positionAroundBomb = document.getElementById(`brick${location + movement}`)
-  if (positionAroundBomb){
-    if (!positionAroundBomb.innerText){
-      positionAroundBomb.innerText = '1'
-    }
-    else if (positionAroundBomb.innerText!=='B'){
-      positionAroundBomb.innerText = `${parseInt(positionAroundBomb.innerText) + 1}`
+  if (positionAroundBomb) {
+    if (!positionAroundBomb.className.includes('bomb')){
+      if(positionAroundBomb.innerText) {
+        positionAroundBomb.innerText = `${parseInt(positionAroundBomb.innerText) + 1}`
+      } else {
+        positionAroundBomb.innerText = '1'
+      }
     }
   }
 }
@@ -205,6 +224,7 @@ function reveal (location, movement, uncovered,collons,rows) {
   if (selectedBrick && selectedBrick.className.includes('covered')) {
     if (selectedBrick.className.includes("flag")) {
       selectedBrick.classList.remove("flag");
+      flagCount.innerText = parseInt(flagCount.innerText) + 1
     }
     if(selectedBrick.innerText) {
       selectedBrick.classList.remove("covered");
@@ -219,41 +239,45 @@ function reveal (location, movement, uncovered,collons,rows) {
 }
 
 // 5. start playing
-function startClicking(runnigTime, bombLoction,collons,rows,howManyBombs,gameLevel) {
-  flagedNums = [];
+function startClicking(bombLoction,collons,rows,howManyBombs,gameLevel) {
   const bricks = document.getElementsByClassName("brick");
   let uncovered = 0;
   for (let brick of bricks) {
     brick.addEventListener('click', function() {
       if (!runnigTime){
-        runnigTime = setInterval(gameTimer,1000)
+        // runnigTime = setInterval(gameTimer,1000)
+        gameTimer();
       };
       if (!brick.className.includes('flag')){
-        if (brick.className.includes('covered') && brick.innerText !== 'B') {
+        if (brick.className.includes('covered') && !brick.className.includes('bomb')) {
           brick.classList.remove('covered');
           uncovered += 1;
           if (uncovered === collons*rows-howManyBombs) {
-            clearInterval(runnigTime);
-            const score = timer.innerText;
+            // clearInterval(runnigTime);
+            pause ();
+            const score = parseInt(timer.innerText);
             setTimeout(function(){alert('You won')}, 10);
             setTimeout(function(){winner(score,gameLevel)}, 1000);
           }
         }
         // empty brick
-        if (!brick.innerText) {
+        if (!brick.innerText && !brick.className.includes('bomb')) {
           uncovered = revealAround(parseInt(brick.id.slice(5)), uncovered,collons,rows);
           if (uncovered === collons*rows-howManyBombs) {
-            clearInterval(runnigTime);
-            const score = timer.innerText;
+            // clearInterval(runnigTime);
+            pause ();
+            const score = parseInt(timer.innerText);
             setTimeout(function(){alert('You won')}, 10);
             setTimeout(function(){winner(score,gameLevel)}, 1000);
           }
         };
         // bomb
-        if (brick.innerText === 'B') {
-          clearInterval(runnigTime);
+        if (brick.className.includes('bomb')) {
+          // clearInterval(runnigTime);
+          pause ();
           for (let eachBomb of bombLoction) {
             document.getElementById(`brick${eachBomb}`).classList.remove("covered")
+            document.getElementById(`brick${eachBomb}`).firstChild.classList.add("vibrate-1")
             if (eachBomb === bombLoction[howManyBombs-1]) {
               setTimeout(function(){alert('Game Over')}, 10);
               setTimeout(function(){gameOver()}, 1000);
@@ -264,24 +288,17 @@ function startClicking(runnigTime, bombLoction,collons,rows,howManyBombs,gameLev
     });
     brick.addEventListener('contextmenu', function(e) {
       if (!runnigTime){
-        runnigTime = setInterval(gameTimer,1000)
+        // runnigTime = setInterval(gameTimer,1000)
+        gameTimer();
       };
       e.preventDefault();
       if (brick.className.includes('covered')){
         if (brick.className.includes("flag")) {
-          brick.classList.remove("flag") && flagedNums.slice(brick.id.slice(5))
+          brick.classList.remove("flag");
+          flagCount.innerText = parseInt(flagCount.innerText) + 1
         } else {
-          flagedNums.push(parseInt(brick.id.slice(5)));
+          flagCount.innerText = parseInt(flagCount.innerText) - 1
           brick.classList.add("flag");
-          if (flagedNums.length === howManyBombs) {
-            flagedNums.sort();
-            if (JSON.stringify(flagedNums) === JSON.stringify(bombLoction)) {
-              clearInterval(runnigTime);
-              const score = timer.innerText;
-              setTimeout(function(){alert('You won')}, 10);
-              setTimeout(function(){winner(score,gameLevel)}, 1000);
-            }
-          }
         }
       }
     });
@@ -291,38 +308,44 @@ function startClicking(runnigTime, bombLoction,collons,rows,howManyBombs,gameLev
 
 // 5.1 timer setup
 function gameTimer () {
-  timer.innerText = `${parseInt(timer.innerText)+1}`
+  runnigTime = setInterval (function () {timer.innerText = `${parseInt(timer.innerText)+1}`},1000)
+}
+
+function pause() {
+  clearInterval(runnigTime)
 }
 
 
 function start (rows,collons,howManyBombs,gameLevel) {
-  let runnigTime;
+  if (runnigTime) {
+    runnigTime = null
+  };
   newBoard(rows,collons);
   const bombLoction = bomb(howManyBombs,rows,collons);
   numbersAroundBomb(bombLoction,collons,rows);
-  startClicking(runnigTime,bombLoction,collons,rows,howManyBombs,gameLevel)
+  startClicking(bombLoction,collons,rows,howManyBombs,gameLevel)
 }
 
 function gameOver () {
   // remove
+  flagCount.innerText = '';
   timer.innerText = '0';
   while (board.firstChild) {
     board.removeChild(board.firstChild)
   }
-  // runnigTime = null;
-  // newBoard(rows,collons);
-  // const bombLoction = bomb(howManyBombs,rows,collons);
-  // numbersAroundBomb(bombLoction,collons,rows);
-  // startClicking(runnigTime,bombLoction,collons,rows,howManyBombs)
+  start()
 }
 
 function winner (score,gameLevel) {
   if (!localStorage.getItem(gameLevel) || localStorage.getItem(gameLevel) > score) {
-    console.log('jkhkn')
     localStorage.setItem(gameLevel,score);
-    document.getElementById(gameLevel) = `Your easy level high score : ${score}`
+    if (gameLevel === 'easyscore') {
+      easyBetter.innerText = score;
+    } else if (gameLevel === 'mediumscore') {
+      mediumBetter.innerText = score;
+    } else {
+      hardBetter.innerText = score;
+    }
   }
   gameOver()
-  // runnigTime = null;
-  
 }
