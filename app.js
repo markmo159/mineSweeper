@@ -335,6 +335,7 @@ function gameOver () {
   }
   start()
 }
+//yalla barca
 
 function winner (score,gameLevel) {
   if (!localStorage.getItem(gameLevel) || localStorage.getItem(gameLevel) > score) {
